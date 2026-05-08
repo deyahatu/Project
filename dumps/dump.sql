@@ -43,7 +43,7 @@ INSERT INTO `items` VALUES
 (6,'cool','Autumn'),
 (7,'sunny','Summer'),
 (8,'windy','Autumn'),
-(9,'humid','Summer');
+(9,'humid','Summerrrrr');
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 UNLOCK TABLES;
 
