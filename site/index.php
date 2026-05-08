@@ -108,8 +108,8 @@ $conn->close();
 <body>
 <div class="card">
     <img src="https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=800&q=80">
-    <h2>Recommendation System</h2>
-    <p>Type or pick a keyword (e.g. <i>hot</i>) and get the matching season.</p>
+    <h2>Smart Recommendation System v2</h2>
+    <p>Type or pick a keyword (e.g. <i>humid</i>) and get the matching season.</p>
 
     <form method="post">
         <input name="typed_keyword" placeholder="Type keyword (optional)">
