@@ -56,19 +56,21 @@ done
 
 DUMP_FILE="dumps/dump.sql"
 
-echo "Check if table '$DB_TABLE' exists"
-if docker exec "$DB_CONT" mysql -uroot -p"$DB_ROOT_PASS" -e "USE $DB_NAME; SHOW TABLES LIKE '$DB_TABLE';" | grep -q "$DB_TABLE"; then
-  echo "Table '$DB_TABLE' exists"
-else
-  echo "Table '$DB_TABLE' missing"
-  if [ -f "$DUMP_FILE" ]; then
-    echo "Importing dump: $DUMP_FILE"
-    docker exec -i "$DB_CONT" mysql -uroot -p"$DB_ROOT_PASS" "$DB_NAME" < "$DUMP_FILE"
-    echo "Import done."
-  else
-    echo "Dump file not found: $DUMP_FILE"
-    exit 1
-  fi
+if [ ! -f "$DUMP_FILE" ]; then
+  echo "Dump file not found: $DUMP_FILE"
+  exit 1
+fi
+
+echo "Importing dump: $DUMP_FILE (always, to keep DB seed in sync with repo)"
+docker exec -i "$DB_CONT" mysql -uroot -p"$DB_ROOT_PASS" "$DB_NAME" < "$DUMP_FILE"
+echo "Import done."
+
+echo "Verifying table '$DB_TABLE' has rows"
+ROW_COUNT=$(docker exec "$DB_CONT" mysql -uroot -p"$DB_ROOT_PASS" -N -B -e "USE $DB_NAME; SELECT COUNT(*) FROM $DB_TABLE;" 2>/dev/null || echo 0)
+echo "Rows in $DB_TABLE: $ROW_COUNT"
+if [ "$ROW_COUNT" -lt 1 ]; then
+  echo "Import failed: no rows in $DB_TABLE"
+  exit 1
 fi
 
 echo "Smoke test"
