@@ -24,7 +24,7 @@ pipeline {
 
     post {
         success {
-            echo "Deployed successfully on http://localhost:8080"
+            echo "Deployed successfully on http://localhost:8081"
         }
         failure {
             sh 'docker compose -p recommendation-app logs --tail=120 || true'
