@@ -26,9 +26,15 @@ test -f Dockerfile || { echo "Dockerfile not found in workspace"; exit 1; }
 docker version
 docker compose version
 
-docker compose -p "$APP" down --remove-orphans || true
+if ! docker ps --format '{{.Names}}' | grep -q "^${DB_CONT}$"; then
+  echo "DB container not running — starting it"
+  docker compose -p "$APP" up -d db
+else
+  echo "DB container already running — reusing (faster build)"
+fi
 
-docker compose -p "$APP" up -d --build
+echo "Building and recreating web only"
+docker compose -p "$APP" up -d --build --no-deps --force-recreate web
 
 echo "Containers status"
 docker compose -p "$APP" ps
